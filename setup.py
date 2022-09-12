@@ -20,6 +20,10 @@ setup(
         "pip>=20.0.1",
         "numpy>=1.17.0",
         "pandas>=1.1.4",
+        "tensorflow>=2.10.0",
+        "opencv-python>=4.6.0",
+        "matplotlib>=3.5.3",
+        "shap>=0.41.0"
     ],
     tests_require=["pytest"],
     include_package_data=True,

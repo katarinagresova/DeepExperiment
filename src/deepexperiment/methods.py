@@ -2,6 +2,7 @@ import tensorflow as tf
 from .utils import ResBlock
 import cv2 
 import numpy as np
+import shap
 
 class GradCam():
     def __init__(self, model):
@@ -62,3 +63,16 @@ class GradCam():
     def _get_last_conv_layer_name(self):
         layers = [layer.name for layer in reversed(self.model.layers) if len(layer.output_shape) == 4 and (isinstance(layer, tf.keras.layers.Conv2D) or isinstance(layer, ResBlock))]
         return layers[0]
+
+class DeepShap():
+    def __init__(self, model, background):
+        self.model = model
+        self.background = background
+        self.e = shap.DeepExplainer(self.model, self.background)
+        # these layers are not supported, so the workaround presented on the github is to use passthrough
+        shap.explainers._deep.deep_tf.op_handlers["AddV2"] = shap.explainers._deep.deep_tf.passthrough 
+        shap.explainers._deep.deep_tf.op_handlers["FusedBatchNormV3"] = shap.explainers._deep.deep_tf.passthrough
+
+    def __call__(self, input):  
+        shap_values = self.e.shap_values(input)
+        return shap_values[0], shap_values[1]
