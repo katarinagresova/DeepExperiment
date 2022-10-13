@@ -1,6 +1,7 @@
 from tensorflow.keras import layers
 from tensorflow.keras.utils import register_keras_serializable
 import numpy as np
+import random
 
 @register_keras_serializable()
 class ResBlock(layers.Layer):
@@ -97,3 +98,36 @@ def one_hot_encoding_batch(df, tensor_dim=(50, 20, 1)):
                 ohe_matrix_2d[index, bind_index, mirna_index, 0] = alphabet.get(base_pairs, 0)
 
     return ohe_matrix_2d, label
+
+def get_indices(samples, model, compare_func):
+  data, _ = one_hot_encoding_batch(samples)
+  preds = model.predict(data)
+  indices = []
+  for i in range(len(preds)):
+    if compare_func(preds[i]):
+      indices.append(i)
+  return indices
+  
+def get_true_positive_index(samples, model):
+  if not hasattr(get_true_positive_index, 'indices'):
+    get_true_positive_index.indices = get_indices(samples, model, lambda x: x[1] > x[0])
+  position = random.randrange(len(get_true_positive_index.indices))
+  return get_true_positive_index.indices[position]
+
+def get_false_negative_index(samples, model):
+  if not hasattr(get_false_negative_index, 'indices'):
+    get_false_negative_index.indices = get_indices(samples, model, lambda x: x[0] > x[1])
+  position = random.randrange(len(get_false_negative_index.indices))
+  return get_false_negative_index.indices[position]
+
+def get_true_negative_index(samples, model):
+  if not hasattr(get_true_negative_index, 'indices'):
+    get_true_negative_index.indices = get_indices(samples, model, lambda x: x[0] > x[1])
+  position = random.randrange(len(get_true_negative_index.indices))
+  return get_true_negative_index.indices[position]
+
+def get_false_positive_index(samples, model):
+  if not hasattr(get_false_positive_index, 'indices'):
+    get_false_positive_index.indices = get_indices(samples, model, lambda x: x[1] > x[0])
+  position = random.randrange(len(get_false_positive_index.indices))
+  return get_false_positive_index.indices[position]
