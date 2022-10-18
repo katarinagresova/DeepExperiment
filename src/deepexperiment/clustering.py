@@ -11,10 +11,10 @@ def cluster_attention(attentions, dist_function, n_clusters):
     clustering = AgglomerativeClustering(n_clusters=n_clusters, affinity="precomputed", linkage='complete').fit(dist)
     return clustering.labels_
 
-def compute_cluster_consensus(attentions, labels):
+def compute_cluster_consensus(score, labels):
   cluster_consensus = []
   for num in range(len(set(labels))):
-    cluster = attentions[labels == num].sum(axis=0)
+    cluster = score[labels == num].sum(axis=0)
     cluster = tf.maximum(cluster, 0) / tf.math.reduce_max(cluster)
     cluster_consensus.append(cluster)
 
