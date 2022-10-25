@@ -89,7 +89,7 @@ complement = {
     "-": ""
 }
 
-def plot_alignment(align_x, align_s, align_y):
+def plot_alignment(align_x, align_s, align_y, arrows = True):
     fig = plt.figure(figsize=(20,2))
     ax = fig.add_subplot(111) 
 
@@ -101,16 +101,22 @@ def plot_alignment(align_x, align_s, align_y):
     height_padding = 0.2
 
     ax.set_xlim(-length_padding, len(align_x) * (1 + length_padding))
-    ax.set_ylim(0, 3 * (1 + height_padding))
+    ax.set_ylim(0, 4 * (1 + height_padding))
+
+    if arrows:
+        ax.add_patch(matplotlib.patches.Arrow(x=(1.2 * len(align_x)) - length_padding, y=0.2, dx=-2, dy=0, width=0.6, color=color_palette[10]))
 
     for i in range(len(align_x)):
 
-        plot_base[align_y[i]](ax, 0.1, 0 + (1.2 * i), 1, color_palette[round(s[i])])
+        plot_base[align_y[i]](ax, 0.6, 0 + (1.2 * i), 1, color_palette[round(s[i])])
         if align_y[i] == complement[align_x[i]]:
-            plot_line(ax, 1.2, 0 + (1.2 * i), 1, color_palette[round(s[i])])
+            plot_line(ax, 1.7, 0 + (1.2 * i), 1, color_palette[round(s[i])])
         elif align_y[i] in "ACTG" and align_x[i] in "ACTG":
-            plot_dot(ax, 1.2, 0 + (1.2 * i), 1, color_palette[round(s[i])])
-        plot_base[align_x[i]](ax, 2.3, 0 + (1.2 * i), 1, color_palette[round(s[i])])
+            plot_dot(ax, 1.7, 0 + (1.2 * i), 1, color_palette[round(s[i])])
+        plot_base[align_x[i]](ax, 3.0, 0 + (1.2 * i), 1, color_palette[round(s[i])])
+
+    if arrows:
+        ax.add_patch(matplotlib.patches.Arrow(x=0, y=4.4, dx=2, dy=0, width=0.6, color=color_palette[10]))
 
     plt.axis('off')
     plt.plot();
@@ -148,21 +154,26 @@ def plot_gene_importance(align_s):
 
     shift = 0.5
 
-    ax.set_xlim(-shift, len(s) -shift)
+    ax.set_xlim(1 - shift, len(s) - shift + 1)
     ax.set_ylim(0, 1)
 
     for i in range(len(s)):
-
-        plot_block(ax, 0, -shift + (1 * i), 1, color_palette[round(s[i])])
+        plot_block(ax, 0, 1 - shift + (1 * i), 1, color_palette[round(s[i])])
 
     # Turn off ticks and labels
     ax.set_yticklabels([])
     ax.set_yticks([])
+    ax.set_xticklabels(np.arange(1, len(align_s) + 1))
+    ax.set_xticks(np.arange(1, len(align_s) + 1))
     plt.plot();
 
-def plot_mRNA_importance(align_y, align_s):
+def plot_miRNA_importance(align_y, align_s):
     fig = plt.figure(figsize=(10,0.5))
     ax = fig.add_subplot(111) 
+
+    # reverse order
+    align_y = align_y[::-1]
+    align_s = align_s[::-1]
 
     max_absolute_value = max(abs(np.array(align_s)))
     s = align_s / max_absolute_value
@@ -177,28 +188,53 @@ def plot_mRNA_importance(align_y, align_s):
             miRNA.append(align_y[i])
             miRNA_s.append(s[i])
 
-    ax.set_xlim(-shift, len(miRNA)-shift)
+    ax.set_xlim(1-shift, len(miRNA)-shift+1)
     ax.set_ylim(0, 1)
 
     for i in range(len(miRNA)):
-        plot_block(ax, 0, -shift + (1 * i), 1, color_palette[round(miRNA_s[i])])
+        plot_block(ax, 0, 1-shift + (1 * i), 1, color_palette[round(miRNA_s[i])])
 
     # Turn off ticks and labels
     ax.set_yticklabels([])
     ax.set_yticks([])
-    ax.set_xticklabels(np.arange(0, len(miRNA)))
-    ax.set_xticks(np.arange(0, len(miRNA)))
+    ax.set_xticklabels(np.arange(1, len(miRNA) + 1))
+    ax.set_xticks(np.arange(1, len(miRNA) + 1))
     plt.plot();
 
 def plotbar_miRNA_importance(align_y, align_s):
 
+    # reverse order
+    align_y = align_y[::-1]
+    align_s = align_s[::-1]
+
+
+    fig, ax = plt.subplots(figsize = (10,4))
+
+    max_absolute_value = max(abs(np.array(align_s)))
+    s = align_s / max_absolute_value
+    s = s * 10 + 10
     miRNA_s = []
+    counter = 1
     for i in range(len(align_y)):
         if align_y[i] != "-":
             miRNA_s.append(align_s[i])
-    plt.bar(x=np.arange(len(miRNA_s)), height=miRNA_s)
+            ax.bar(x=counter, height=align_s[i], color=color_palette[round(s[i])])
+            counter += 1
+
+    #ax.set_yticklabels([])
+    #ax.set_yticks([])
+    ax.set_xticklabels(np.arange(1, len(miRNA_s) + 1))
+    ax.set_xticks(np.arange(1, len(miRNA_s) + 1))
+    ax.plot();
 
 def plot_miRNA_importance_w_spaces(align_y, align_s):
+    
+    end_i = len(align_y) - min(align_y.index('A'), align_y.index('T'), align_y.index('C'), align_y.index('G'))
+
+    # reverse order
+    align_y = align_y[::-1]
+    align_s = align_s[::-1]
+    
     fig = plt.figure(figsize=(15,0.5))
     ax = fig.add_subplot(111) 
 
@@ -211,28 +247,45 @@ def plot_miRNA_importance_w_spaces(align_y, align_s):
     shift = 0.5
 
     start_i = min(align_y.index('A'), align_y.index('T'), align_y.index('C'), align_y.index('G'))
-    end_i = min(start_i + 30, len(align_y))
-    miRNA = align_y[start_i:end_i+1]
-    miRNA_s = s[start_i:end_i+1]
+    miRNA = align_y[start_i:end_i]
+    miRNA_s = s[start_i:end_i]
 
-    ax.set_xlim(-shift, len(miRNA) - shift)
+    ax.set_xlim(1-shift, len(miRNA) - shift+1)
     ax.set_ylim(0, 1)
 
     for i in range(len(miRNA)):
         if miRNA[i] in "ACTG":
-            plot_block(ax, 0, -shift + (1 * i), 1, color_palette[round(miRNA_s[i])])
+            plot_block(ax, 0, 1-shift + (1 * i), 1, color_palette[round(miRNA_s[i])])
         else:
-            plot_block(ax, 0, -shift + (1 * i), 1, "white")
+            plot_block(ax, 0, 1-shift + (1 * i), 1, "white")
 
     # Turn off ticks and labels
     ax.set_yticklabels([])
     ax.set_yticks([])
+    ax.set_xticklabels(np.arange(1, len(miRNA) + 1))
+    ax.set_xticks(np.arange(1, len(miRNA) + 1))
     plt.plot();
 
 def plotbar_miRNA_importance_w_spaces(align_y, align_s):
 
-    start_i = min(align_y.index('A'), align_y.index('T'), align_y.index('C'), align_y.index('G'))
-    end_i = min(start_i + 30, len(align_y))
-    miRNA_s = align_s[start_i:end_i+1]
+    end_i = len(align_y) - min(align_y.index('A'), align_y.index('T'), align_y.index('C'), align_y.index('G'))
 
-    plt.bar(x=np.arange(len(miRNA_s)), height=miRNA_s)
+    # reverse order
+    align_y = align_y[::-1]
+    align_s = align_s[::-1]
+
+    start_i = min(align_y.index('A'), align_y.index('T'), align_y.index('C'), align_y.index('G'))
+    miRNA_s = align_s[start_i:end_i]
+
+    fig, ax = plt.subplots(figsize = (10,4))
+
+    max_absolute_value = max(abs(np.array(miRNA_s)))
+    s = miRNA_s / max_absolute_value
+    s = s * 10 + 10
+
+    for i in range(0, len(miRNA_s)):
+        ax.bar(x=i + 1, height=miRNA_s[i], color=color_palette[round(s[i])])
+
+    ax.set_xticklabels(np.arange(1, len(miRNA_s) + 1))
+    ax.set_xticks(np.arange(1, len(miRNA_s) + 1))
+    ax.plot();
