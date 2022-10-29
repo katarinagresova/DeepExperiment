@@ -9,14 +9,14 @@ class Attrament:
         self.down = "↓"
         self.diagonal = "↘"
 
-    def __call__(self, gene, miRNA, score_matrix):
+    def __call__(self, gene, miRNA, score_matrix, opening_percentile = 99, elonging_percentile = 90):
         
         # compute alignment for one pair of miRNA and gene
         assert type(miRNA) == str 
         assert type(gene) == str
         #assert score_matrix.shape == (len(gene), len(miRNA))
 
-        score_matrix, opening_penalty, elonging_penalty = self._preprocess_score(miRNA, gene, score_matrix)
+        score_matrix, opening_penalty, elonging_penalty = self._preprocess_score(miRNA, gene, score_matrix, opening_percentile, elonging_percentile)
         grid = self._forward_pass(gene, miRNA, score_matrix, opening_penalty, elonging_penalty)
         return self._backward_pass(gene, miRNA, grid, score_matrix)
     
@@ -84,7 +84,7 @@ class Attrament:
         
         return (aligned_x, aligned_s, aligned_y)
 
-    def _preprocess_score(self, miRNA, gene, score_matrix):
+    def _preprocess_score(self, miRNA, gene, score_matrix, opening_percentile, elonging_percentile):
 
         data = one_hot_encoding(miRNA, gene)[0,:,:,0]
 
@@ -102,8 +102,8 @@ class Attrament:
 
         # set the opening and elonging penalties
         abs_vals = np.stack(np.abs(score_matrix.sum(-1)), 0).flatten()
-        opening_gap = np.nanpercentile(abs_vals, 99)
-        elonging_gap = np.nanpercentile(abs_vals, 90)
+        opening_gap = np.nanpercentile(abs_vals, opening_percentile)
+        elonging_gap = np.nanpercentile(abs_vals, elonging_percentile)
 
         
 
