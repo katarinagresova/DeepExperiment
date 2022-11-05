@@ -17,8 +17,8 @@ class Attrament:
         #assert score_matrix.shape == (len(gene), len(miRNA))
 
         score_matrix, opening_penalty, elonging_penalty = self._preprocess_score(miRNA, gene, score_matrix, opening_percentile, elonging_percentile)
-        grid = self._forward_pass(gene, miRNA, score_matrix, opening_penalty, elonging_penalty)
-        return self._backward_pass(gene, miRNA, grid, score_matrix)
+        grid = self._forward_pass(miRNA, gene, score_matrix, opening_penalty, elonging_penalty)
+        return self._backward_pass(miRNA, gene, grid, score_matrix)
     
     def _score(self, grid, i, j, d, score):
         dirs = [self.right, self.diagonal, self.down]
@@ -27,7 +27,7 @@ class Attrament:
             grid[i - 1, j][1] - d ]
         return (dirs[s.index(max(s))], max(s))
 
-    def _forward_pass(self, x, y, scor_mat, opening, elonging):
+    def _forward_pass(self, y, x, scor_mat, opening, elonging):
         nucl_x = [""] + [ch for ch in x]
         nucl_y = [""] + [ch for ch in y]
         
@@ -54,7 +54,7 @@ class Attrament:
 
         return grid
 
-    def _backward_pass(self, x, y, grid, score_matrix):
+    def _backward_pass(self, y, x, grid, score_matrix):
 
         nucl_x = [""] + [ch for ch in x]
         nucl_y = [""] + [ch for ch in y]
