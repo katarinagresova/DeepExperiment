@@ -9,7 +9,7 @@ class Attrament:
         self.down = "↓"
         self.diagonal = "↘"
 
-    def __call__(self, gene, miRNA, score_matrix, opening_percentile = 99, elonging_percentile = 90):
+    def __call__(self, miRNA, gene, score_matrix, opening_percentile = 99, elonging_percentile = 90):
         
         # compute alignment for one pair of miRNA and gene
         assert type(miRNA) == str 
