@@ -100,6 +100,8 @@ def one_hot_encoding_batch(df, tensor_dim=(50, 20, 1)):
     return ohe_matrix_2d, label
 
 def get_indices(samples, model, compare_func):
+  """ Returns the indices of the samples which prediction score satisfies the compare_func 
+  """
   data, _ = one_hot_encoding_batch(samples)
   preds = model.predict(data)
   indices = []
@@ -108,26 +110,30 @@ def get_indices(samples, model, compare_func):
       indices.append(i)
   return indices
   
-def get_true_positive_index(samples, model):
+def get_true_positive_index(pos_samples, model):
+  """ Returns the index of a random true positive sample. Computed based on the provided model's predictions. """
   if not hasattr(get_true_positive_index, 'indices'):
-    get_true_positive_index.indices = get_indices(samples, model, lambda x: x[1] > x[0])
+    get_true_positive_index.indices = get_indices(pos_samples, model, lambda x: x[1] > x[0])
   position = random.randrange(len(get_true_positive_index.indices))
   return get_true_positive_index.indices[position]
 
-def get_false_negative_index(samples, model):
+def get_false_negative_index(pos_samples, model):
+  """ Returns the index of a random false negative sample. Computed based on the provided model's predictions. """
   if not hasattr(get_false_negative_index, 'indices'):
-    get_false_negative_index.indices = get_indices(samples, model, lambda x: x[0] > x[1])
+    get_false_negative_index.indices = get_indices(pos_samples, model, lambda x: x[0] > x[1])
   position = random.randrange(len(get_false_negative_index.indices))
   return get_false_negative_index.indices[position]
 
-def get_true_negative_index(samples, model):
+def get_true_negative_index(neg_samples, model):
+  """ Returns the index of a random true negative sample. Computed based on the provided model's predictions. """
   if not hasattr(get_true_negative_index, 'indices'):
-    get_true_negative_index.indices = get_indices(samples, model, lambda x: x[0] > x[1])
+    get_true_negative_index.indices = get_indices(neg_samples, model, lambda x: x[0] > x[1])
   position = random.randrange(len(get_true_negative_index.indices))
   return get_true_negative_index.indices[position]
 
-def get_false_positive_index(samples, model):
+def get_false_positive_index(neg_samples, model):
+  """ Returns the index of a random false positive sample. Computed based on the provided model's predictions. """
   if not hasattr(get_false_positive_index, 'indices'):
-    get_false_positive_index.indices = get_indices(samples, model, lambda x: x[1] > x[0])
+    get_false_positive_index.indices = get_indices(neg_samples, model, lambda x: x[1] > x[0])
   position = random.randrange(len(get_false_positive_index.indices))
   return get_false_positive_index.indices[position]
