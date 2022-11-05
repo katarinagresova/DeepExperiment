@@ -171,6 +171,29 @@ def plot_gene_importance(align_s):
     ax.set_xticks(np.arange(1, len(align_s) + 1))
     plt.plot();
 
+def plotbar_gene_importance(align_x, align_s):
+
+    # reverse order
+    align_s = align_s[::-1]
+    align_x = align_x[::-1]
+
+    fig, ax = plt.subplots(figsize = (20,4))
+
+    max_absolute_value = max(abs(np.array(align_s)))
+    s = align_s / max_absolute_value
+    s = s * 10 + 10
+    mRNA_s = []
+    counter = 1
+    for i in range(len(align_x)):
+        if align_x[i] != "-":
+            mRNA_s.append(align_s[i])
+            ax.bar(x=counter, height=align_s[i], color=color_palette[round(s[i])])
+            counter += 1
+
+    ax.set_xticklabels(np.arange(1, len(mRNA_s) + 1))
+    ax.set_xticks(np.arange(1, len(mRNA_s) + 1))
+    ax.plot();
+
 def plot_miRNA_importance(align_y, align_s):
     fig = plt.figure(figsize=(10,0.5))
     ax = fig.add_subplot(111) 
@@ -278,3 +301,47 @@ def plotbar_miRNA_importance_w_spaces(align_y, align_s):
     ax.set_xticklabels(np.arange(1, len(miRNA_s) + 1))
     ax.set_xticks(np.arange(1, len(miRNA_s) + 1))
     ax.plot();
+
+def plot_cluster(ax, y_cluster, s_cluster, cluster_consensus, title):
+
+    max_absolute_value = max(abs(np.array(cluster_consensus)))
+    s = np.array(cluster_consensus) / max_absolute_value
+    s = s * 10 + 10
+
+    for i in range(len(s)):
+        ax.bar(x=i+1, height=cluster_consensus[i], color=color_palette[round(s[i])])
+
+    ax.axhline(y=0, color='black', linestyle='-', linewidth=1)
+
+    for i in range(50):
+        index = np.random.randint(0, len(y_cluster))
+
+        max_absolute_value = max(abs(np.array(s_cluster[index])))
+        s = s_cluster[index] / max_absolute_value
+        s = s * 10 + 10
+
+        shift = 0.5
+        height = 0.01
+
+        miRNA = []
+        miRNA_s = []
+        for j in range(len(y_cluster[index])):
+            if y_cluster[index][j] != "-":
+                miRNA.append(y_cluster[index][j])
+                miRNA_s.append(s[j])
+
+        base = -1 * height * i - height
+        for j in range(len(miRNA)):
+            plot_block(ax, base, 1-shift + (1 * j), height, color_palette[round(miRNA_s[j])])
+
+
+    ax.set_xlim(0.5, 20 + 0.5)
+    ax.set_ylim(-0.5, 1)
+
+    ax.set_xticklabels(np.arange(1, len(miRNA_s) + 1))
+    ax.set_xticks(np.arange(1, len(miRNA_s) + 1))
+
+    ax.set_yticklabels([0, 0.2, 0.4, 0.6, 0.8, 1])
+    ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1])
+
+    ax.set_title(title)
