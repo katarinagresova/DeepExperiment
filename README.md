@@ -1,5 +1,6 @@
 # DeepExperiment
 
+If you want to understand the basic functionality of the package, navigate to the [experiments/Helwak2013_miRBind_interpretation_showcase.ipynb](experiments/Helwak2013_miRBind_interpretation_showcase.ipynb).
 
 ## Usage 
 
