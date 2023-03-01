@@ -23,3 +23,23 @@ source venv/bin/activate
 
 pip install -e .
 ```
+
+
+## Citing Deep Experiment
+
+If you use Deep Experiment in your research, please cite it as follows.
+
+### Text
+
+Grešová, K.; Vaculík, O.; Alexiou, P. Using Attribution Sequence Alignment to Interpret Deep Learning Models for miRNA Binding Site Prediction. Biology 2023, 12, 369. https://doi.org/10.3390/biology12030369
+
+### BibTeX
+
+```bib
+@article{gresova2023using,
+  title={Using Attribution Sequence Alignment to Interpret Deep Learning Models for miRNA Binding Site Prediction},
+  author={Gre{\v{s}}ov{\'a}, Katar{\'\i}na and Vacul{\'\i}k, Ond{\v{r}}ej and Alexiou, Panagiotis},
+  journal={Biology},
+  year={2023},
+  publisher={MDPI},
+}
