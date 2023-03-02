@@ -40,6 +40,10 @@ Grešová, K.; Vaculík, O.; Alexiou, P. Using Attribution Sequence Alignment to
   title={Using Attribution Sequence Alignment to Interpret Deep Learning Models for miRNA Binding Site Prediction},
   author={Gre{\v{s}}ov{\'a}, Katar{\'\i}na and Vacul{\'\i}k, Ond{\v{r}}ej and Alexiou, Panagiotis},
   journal={Biology},
+  volume={12},
+  number={3},
+  pages={369},
   year={2023},
-  publisher={MDPI},
+  publisher={MDPI}
 }
+```
