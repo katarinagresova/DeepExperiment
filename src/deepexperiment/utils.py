@@ -79,7 +79,7 @@ def one_hot_encoding(miRNA, gene, tensor_dim=(50, 20, 1)):
 
     return ohe_matrix_2d
 
-def one_hot_encoding_batch(df, tensor_dim=(50, 20, 1)):
+def one_hot_encoding_batch(df, gene_col='gene', miRNA_col='miRNA', tensor_dim=(50, 20, 1)):
     # alphabet for watson-crick interactions.
     alphabet = {"AT": 1., "TA": 1., "GC": 1., "CG": 1.}
     # labels to one hot encoding
@@ -92,8 +92,8 @@ def one_hot_encoding_batch(df, tensor_dim=(50, 20, 1)):
 
     # compile matrix with watson-crick interactions.
     for index, row in df.iterrows():
-        for bind_index, bind_nt in enumerate(row.gene.upper()):
-            for mirna_index, mirna_nt in enumerate(row.miRNA.upper()):
+        for bind_index, bind_nt in enumerate(row[gene_col].upper()):
+            for mirna_index, mirna_nt in enumerate(row[miRNA_col].upper()):
                 base_pairs = bind_nt + mirna_nt
                 ohe_matrix_2d[index, bind_index, mirna_index, 0] = alphabet.get(base_pairs, 0)
 
